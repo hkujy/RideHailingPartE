@@ -1,5 +1,6 @@
 # generate a Graph
 import networkx as nx
+import myclass as mc
 def get_graph(link_table, node_table):
     """
     generate a network based on link information and node information
@@ -27,3 +28,33 @@ def get_graph(link_table, node_table):
     nx.set_node_attributes(G, node_attributes)
 
     return G
+
+def create_netx_graph(my_net:mc.GraphClass):
+    """
+        from my own network to create a graph
+    """
+    G = nx.Graph()
+    # add nodes
+    for n in my_net.nodes:
+        G.add_node(n.name)
+    # add edges
+    for e in my_net.edges:
+        G.add_edge(e.tail, e.head)
+        # TODO: need to set the cost based on the weight
+        G.edges[e.tail,e.head]['weight'] = e.cost.wt
+        G.edges[e.tail,e.head]['type'] = e.type
+    
+
+    # print and check and verify the edge weight
+    for e in G.edges(): 
+        print("tail={0},head={1},weight={2},type={3}".format(
+            e[0],e[1], G.edges[e[0],e[1]]['weight'],
+            G.edges[e[0],e[1]]['type']
+        ))
+
+    return G
+
+
+
+
+

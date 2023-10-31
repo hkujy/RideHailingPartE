@@ -1,11 +1,11 @@
 "MAS assignment"
 
-import LINK
-import NETWORK
-import PATH 
-import MODE
-import PATH2LINK
-import RIDE_HAILING
+import link
+import network
+import path 
+import mode
+import path_to_link
+import ride_hailing
 import pandas as pd
 from sklearn.metrics import mean_squared_error
 import numpy as np
@@ -38,13 +38,13 @@ def assignment(my_link, my_node, my_demand, origin_zone, destination_zone,
     """
 
     # 0. generate path set
-    my_network = NETWORK.get_graph(link_table=my_link, node_table=my_node)
-    my_path_set = PATH.get_path_set(G=my_network, origin_zone=origin_zone, destination_zone=destination_zone)
+    my_network = network.get_graph(link_table=my_link, node_table=my_node)
+    my_path_set = path.get_path_set(G=my_network, origin_zone=origin_zone, destination_zone=destination_zone)
 
     # 1. initializing path set
     # 1.1 initializing path cost
-    my_path_set = PATH.get_path_info(path_set=my_path_set, link_table=my_link)
-    my_path_set = PATH.path_cost(path_set=my_path_set, miu_in=miu_in, miu_out=miu_out, lamda_0_transit=lamda_0_transit, theta_1=theta_1)
+    my_path_set = path.get_path_info(path_set=my_path_set, link_table=my_link)
+    my_path_set = path.path_cost(path_set=my_path_set, miu_in=miu_in, miu_out=miu_out, lamda_0_transit=lamda_0_transit, theta_1=theta_1)
     num_path = len(list(my_path_set['path_id']))
     print(list(my_path_set['path_id']))
     print(list(my_path_set['mode']))
@@ -54,13 +54,13 @@ def assignment(my_link, my_node, my_demand, origin_zone, destination_zone,
     my_path_set['I'] = 0 # add initial iteration number
 
     # 1.2 generate mode set
-    my_mode_set = MODE.get_mode_set(paths=my_path_set,theta_1=theta_1,theta_2=theta_2)
+    my_mode_set = mode.get_mode_set(paths=my_path_set,theta_1=theta_1,theta_2=theta_2)
     my_mode_set['I'] = 0 # add initial iteration number
     num_mode = len(list(my_mode_set['mode']))
     # print(my_mode_set['mode_logit'].sum())
 
     # 1.3 get demand-based flow
-    new_paths = MODE.get_y_flow(mode_set=my_mode_set, path_set=my_path_set, demand=my_demand)
+    new_paths = mode.get_y_flow(mode_set=my_mode_set, path_set=my_path_set, demand=my_demand)
     new_paths['I'] = 0 # add initial iteration number
     new_paths['path_flow'] = my_path_set['path_flow']
 

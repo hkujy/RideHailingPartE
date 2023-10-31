@@ -1,42 +1,81 @@
-# %%
 import pandas as pd
-import warnings
-warnings.filterwarnings('ignore')
 import matplotlib.pyplot as plt
 import numpy as np
-import os
-import sys
-import MSA
-import LINK
+import read_data
+import network
+import networkx as nx 
+import myclass as mc
+import copy
+import mypara 
+
+
+
+if __name__ == "__main__":
+    """
+        main program
+    """
+    # step 0: set the intitl para class
+    para = mypara.ParaClass() 
+    # step 1: read data
+    net = read_data.read_data()
+    # step 2: Create paths 
+    # step 2.1. convert my network to networkx data
+    G = network.create_netx_graph(net) 
+    # step 2.2 create paths 
+    paths = []
+    counter = 0
+    for w in net.ODs:
+        # add one more
+        for m in w.modes:
+            #TODO: Here you need to address different modes
+            #TODO: given mode m, if mode can not travel a link, set the link weight to very large, before find the simple paths
+            #TODO: after solveing, you may change the large number to be the origin weight number
+            for path in nx.all_simple_edge_paths(G, source= w.origin, target= w.dest): # generate all paths 
+                print(path)
+                paths.append(mc.PathClass())
+                paths[-1].id = counter
+                paths[-1].edges = copy.deepcopy(path)
+                paths[-1].od = w.id
+                w.mode_path[m].append(paths[-1].id)
+                counter =  counter + 1 
+                # links = path # record links
+                # link_sque =[G.edges[edge]['link_id'] for edge in path] # record links ID
+                # name_sque = [G.edges[edge]['name'] for edge in path]
+                # attribute_set = [G.edges[edge]['attribute'] for edge in path]            
+                # paths.append([od_pair, links, link_sque, name_sque, attribute_set])
+
+    print("pause and check") 
+    
+    #TODO: 1. check path generated for each mode/OD pair/
+    # 2. write a function to print the path to a file 
+    # 3. write a function to read the path from a file
+    # 4. write a function to compute the logsum utiltiy for mode/nested modes 
+    # Therefore, in the future tests, you only need to generate path set for once (then adjust the function to read)
+    # 4. deal with cost of other links etc. 
+    # 5. not sure about the fleet size updating method
+
+    #TODO: MSA main
+    # there are algorithms for solving nested logit model. 
+    # Stochastic User Equilibrium Formulation for Generalized Nested Logit Model
+    # (you can find more)
+    # however, these studies formulated as minimistaiton problem for the assignment
+    # which is not applicable for us, because of the consideration of the fleet size ?? 
+    # Algorithm
+    # level 1: assign flow between Auto/Combined, this needs an MSA updating method
+    # level 2: assign flow between each mode, this is another MSA
+    # level 3: assign flow to paths, this is a path MSA
+
+
+
+
+
+
+    exit()
+ 
+    
+# warnings.filterwarnings('ignore')
 __file__ = './'
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-# os.path.dirname(__file__)获取当前文件的绝对路径
-# os.path.join(xx,'..')在后面追加..，相当于进入上一级目录
-# os.path.abspath(xx)获取绝对路径
-# sys.path.append()将其加入系统路径当中
-# %%
-# read data
-# my_link = pd.read_excel(r'D:\004_PhD_Dissertation\Paper_Code\Part3\input_network\Nguyen_Dupuis_0515.xlsx', sheet_name='link_info')
-my_link = pd.read_excel('../input_network/Nguyen_Dupuis_0515.xlsx', sheet_name='link_info')
-my_link['I'] = 0
-# my_node = pd.read_excel(r'D:\004_PhD_Dissertation\Paper_Code\Part3\input_network\Nguyen_Dupuis_0515.xlsx', sheet_name='node_info')
-my_node = pd.read_excel('../input_network/Nguyen_Dupuis_0515.xlsx', sheet_name='node_info')
-my_link['name'] = my_link['from'].astype('str') +'-'+ my_link['to'].astype('str')
-# my_demand = pd.read_excel(r'D:\004_PhD_Dissertation\Paper_Code\Part3\input_network\Nguyen_Dupuis_0515.xlsx', sheet_name='demand_info')
-my_demand = pd.read_excel('../input_network/Nguyen_Dupuis_0515.xlsx', sheet_name='demand_info')
-print("Test reading demand")
-print(my_demand)
-print("Test reading links")
-print(my_link)
-print("Test reading nodes")
-print(my_node)
-# exit()
-
-# %%
 # set parameter
-origin_zone = ['r1','r2']
-destination_zone = ['s1','s2']
 theta_1 = 0.008# path 
 theta_2 = 0.005 # mode
 miu_in = 25
@@ -45,10 +84,9 @@ lamda_0_hailing = 2 #2 RMB/minute
 lamda_0_PR = 20 # RMB
 lamda_0_transit = 5
 N_hailing = 600
-lamda_0_auto = LINK.compute_lamda_0_auto(fuel_consumption=8.5)
+lamda_0_auto = link.compute_lamda_0_auto(fuel_consumption=8.5)
 
-# %%
-res = MSA.assignment(my_link= my_link, my_node= my_node, my_demand= my_demand,
+res = msa.assignment(my_link= my_link, my_node= my_node, my_demand= my_demand,
                     origin_zone= origin_zone, destination_zone= destination_zone,
                     miu_in= miu_in, miu_out= miu_out,
                     lamda_0_auto = lamda_0_auto,
@@ -58,7 +96,6 @@ res = MSA.assignment(my_link= my_link, my_node= my_node, my_demand= my_demand,
                     theta_1= theta_1, theta_2= theta_2,
                     N_hailing= N_hailing, A=2, maximum_iter=300)
 
-# %%
 # RMSE
 RMSE = res[0]
 
@@ -73,7 +110,6 @@ path = res[2]
 path = path[['I','path_id', 'mode', 'path_flow', 'path_cost']]
 path['path_cost'] = abs(path['path_cost'])
 
-# %%
 num_loc = 200
 plt.rcParams['font.family'] = 'Times New Roman'
 plt.rcParams['font.size'] = 18
@@ -114,7 +150,6 @@ plt.tight_layout()
 
 plt.show()
 
-# %%
 # market share
 num_loc = 100
 #plt.ticklabel_format(style='plain')
@@ -177,13 +212,10 @@ ax4.plot(mode[mode['mode'] == 'R&T'].iloc[1:num_loc]['I'],
 ax4.set_xlabel('Number of iterations')
 ax4.set_ylabel('Average market share (%)')
 ax4.set_title('(d) R&T mode', fontsize=18, loc='center', y=1.02)
-
-
 plt.tight_layout()
 
 plt.show()
 
-# %%
 
 
 

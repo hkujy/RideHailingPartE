@@ -1,4 +1,0 @@
-1. 以py结尾的文件是各个中间过程的函数
-2.  Nguyen_Dupuis、small_network两个文件夹是对应网格的数值实验，以ipynb结尾，需要在VS code中安装jupyter notebook插件打开
-3. “逐步测试编码”文件夹是编写py文件的测试过程。
-4. 代码的数据数据格式是data_framework 
