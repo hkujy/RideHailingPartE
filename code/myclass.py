@@ -1,5 +1,5 @@
 """
-class
+    class
 """
 class NodeClass(object):
     def __init__(self):
@@ -9,7 +9,7 @@ class NodeClass(object):
         self.x = -1
         self.y = -1
         self.outlinks=[]
-        self.outlinks=[]
+        self.inlinks=[]
 
 class CostClass(object):
     def __init__(self):
@@ -27,16 +27,17 @@ class OdClass(object):
         self.origin = -1
         self.dest = -1
         self.demand = -1
-        #TODO: here I only list two modes as an example, you need to add others
-        self.nest_modes = {"auto":["car","RH"],
-                           "tranit":["bus"],
+
+        self.nest_modes = {"single":["car","RH","bus"],
                            "combine":["P+R","R+H"]}
         self.modes = ["car","RH","bus","P+R","R+H"]   # how many modes connecting this OD pair
         self.mode_path_set = {"car":[], "bus":[], "RH":[], "bus":[], "P+R":[], "R+H":[] }
+
         self.mode_flow = {"car":-1, "bus":-1, "RH":-1, "bus":-1, "P+R":-1, "R+H":-1}
         self.mode_utility = {"car":-1, "bus":-1, "RH":-1, "bus":-1, "P+R":-1, "R+H":-1}
-        self.nest_mode_flow = {"auto":-1, "tranit":-1, "combine":-1}
-        self.nest_mode_utility = {"auto":-1, "tranit":-1, "combine":-1}
+
+        self.nest_mode_flow = {"single":-1, "combine":-1}
+        self.nest_mode_utility = {"single":-1, "combine":-1}
 
 
 class PathClass(object):
@@ -55,8 +56,8 @@ class EdgeClass(object):
         self.id = -1
         self.type = -1
         self.att = "undefined"
-        self.head = "undefined"
-        self.tail = "undefined"
+        self.from_node = "undefined"
+        self.to_node = "undefined"
         self.lenth = 0
         self.flow = -1
         self.cost = CostClass()

@@ -39,15 +39,16 @@ def create_netx_graph(my_net:mc.GraphClass):
         G.add_node(n.name)
     # add edges
     for e in my_net.edges:
-        G.add_edge(e.tail, e.head)
+        G.add_edge(e.from_node, e.to_node)
         # TODO: need to set the cost based on the weight
-        G.edges[e.tail,e.head]['weight'] = e.cost.wt
-        G.edges[e.tail,e.head]['type'] = e.type
-    
+        # if e.type..
+        G.edges[e.from_node,e.to_node]['weight'] = e.cost.wt
+        G.edges[e.from_node,e.to_node]['origin_weight'] = e.cost.wt
+        G.edges[e.from_node,e.to_node]['type'] = e.type
 
     # print and check and verify the edge weight
     for e in G.edges(): 
-        print("tail={0},head={1},weight={2},type={3}".format(
+        print("from={0},to={1},weight={2},type={3}".format(
             e[0],e[1], G.edges[e[0],e[1]]['weight'],
             G.edges[e[0],e[1]]['type']
         ))

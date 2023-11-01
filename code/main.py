@@ -27,27 +27,52 @@ if __name__ == "__main__":
     for w in net.ODs:
         # add one more
         for m in w.modes:
+            # m = car
+            # changed_links_list =[]
+            # if link att is bus 
+                #  weight = 99
+                # change_links_list.append(changed link id)
+            ## update graph weight: 
+            ## if link belongs to mode subnetwork, weight = weight 
+            ## if link does not not belong to mode subnetwork, set the link weight to 9999
             #TODO: Here you need to address different modes
             #TODO: given mode m, if mode can not travel a link, set the link weight to very large, before find the simple paths
             #TODO: after solveing, you may change the large number to be the origin weight number
             for path in nx.all_simple_edge_paths(G, source= w.origin, target= w.dest): # generate all paths 
                 print(path)
-                paths.append(mc.PathClass())
-                paths[-1].id = counter
-                paths[-1].edges = copy.deepcopy(path)
-                paths[-1].od = w.id
-                w.mode_path[m].append(paths[-1].id)
+                # select path procedure 
+                # 1. check path cost： if path cost greater 99
+                # - not used path
+                if counter > para.para_dict["Num_ksp"]:
+                    pass
+                else:
+                    paths.append(mc.PathClass())
+                    paths[-1].id = counter
+                    paths[-1].edges = copy.deepcopy(path)
+                    paths[-1].od = w.id
+                    paths[-1].node = m
+                    w.mode_path_set[m].append(paths[-1].id)
                 counter =  counter + 1 
                 # links = path # record links
                 # link_sque =[G.edges[edge]['link_id'] for edge in path] # record links ID
                 # name_sque = [G.edges[edge]['name'] for edge in path]
                 # attribute_set = [G.edges[edge]['attribute'] for edge in path]            
                 # paths.append([od_pair, links, link_sque, name_sque, attribute_set])
-
-    print("pause and check") 
-    
+            ## update graph weight: 
+            ## for l in changed links_list:
+                ## weight  =  origin_weight
+    # print("pause and check") 
+    # for w in net.ODs:
+    #     for m in w.modes:
+    #         # calute mode utiltiy. path 
+    #         for p in w.mode_paths:
+    #             pass
+    #                 # paths[p]
+    #     for m in w.nest_modes:
+    #         pass
     #TODO: 1. check path generated for each mode/OD pair/
-    # 2. write a function to print the path to a file 
+    # print, excel, csv
+    # 2. write a function to print the path to a file, OD, model, egdge
     # 3. write a function to read the path from a file
     # 4. write a function to compute the logsum utiltiy for mode/nested modes 
     # Therefore, in the future tests, you only need to generate path set for once (then adjust the function to read)

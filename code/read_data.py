@@ -23,8 +23,8 @@ def read_data():
        links[-1].id = l 
        links[-1].type = my_link["type"][l]
        links[-1].att = my_link["attribute"][l]
-       links[-1].tail = my_link["from"][l]
-       links[-1].head = my_link["to"][l]
+       links[-1].from_node = my_link["from"][l]
+       links[-1].to_node = my_link["to"][l]
        links[-1].flow = my_link["flow"][l]
        links[-1].fare = my_link["fare_rate"][l]
        links[-1].length = my_link["l_a"][l]
@@ -50,7 +50,6 @@ def read_data():
         mc.print_obj(n)
 
     # step 3: read demand
-
     my_demand = pd.read_excel('../input_network/Nguyen_Dupuis_0515.xlsx', sheet_name='demand_info')
     ODs = []
     for w in range(0,my_demand.shape[0]):
@@ -65,10 +64,10 @@ def read_data():
 
     # create link node relations
     for l in links:
-        tail_node_name = l.tail
+        tail_node_name = l.from_node
         tail_node_id = [n for n in nodes if n.name == tail_node_name][0].id
         nodes[tail_node_id].outlinks.append(l.id)
-        head_node_name = l.head
+        head_node_name = l.to_node
         head_node_id = [n for n in nodes if n.name == head_node_name][0].id
         nodes[head_node_id].inlinks.append(l.id)
 

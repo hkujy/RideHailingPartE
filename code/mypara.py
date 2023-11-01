@@ -10,5 +10,6 @@ class ParaClass(object):
                 "lamda_0_hailing": 2, #2 RMB/minute 
                 "lamda_0_PR":20, # RMB 
                 "lamda_0_transit":5, 
-                "N_hailing": 600
+                "N_hailing": 600,
+                "Num_ksp":3
                 }
