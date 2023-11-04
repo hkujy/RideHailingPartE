@@ -7,10 +7,11 @@ import os
 import sys
 import myclass as mc
 import copy
+import busclassfuns as bcf
+import mypara
     
 
-
-def read_data():
+def read_data(_para:mypara.ParaClass):
     """
         retrun demand, link, nodes
     """
@@ -75,6 +76,12 @@ def read_data():
     net.ODs = copy.deepcopy(ODs)
     net.edges = copy.deepcopy(links)
     net.nodes = copy.deepcopy(nodes)
+    net.buses = bcf.read_bus_data()   # read bus data
+
+    bcf.append_bus_edges(_edges=net.edges,_buses=net.buses,_para=_para)
+
+    bcf.cal_bus_edge_inveh_and_waiting_time(_edges=net.edges, _buses=net.buses,
+                                            _para=_para)
 
 
     return net

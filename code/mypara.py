@@ -11,5 +11,6 @@ class ParaClass(object):
                 "lamda_0_PR":20, # RMB 
                 "lamda_0_transit":5, 
                 "N_hailing": 600,
-                "Num_ksp":3
+                "Num_ksp":3,
+                "Num_None_BusLinks":-1
                 }

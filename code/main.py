@@ -7,8 +7,11 @@ import networkx as nx
 import myclass as mc
 import copy
 import mypara 
+import busclassfuns as bcf
 
+"""
 
+"""
 
 if __name__ == "__main__":
     """
@@ -17,7 +20,10 @@ if __name__ == "__main__":
     # step 0: set the intitl para class
     para = mypara.ParaClass() 
     # step 1: read data
-    net = read_data.read_data()
+    net = read_data.read_data(para)
+    bcf.Test_Cal_Bus_Congestion_Cost(net,para)
+    bcf.print_bus_edges(net.edges)
+    exit()
     # step 2: Create paths 
     # step 2.1. convert my network to networkx data
     G = network.create_netx_graph(net) 
@@ -97,7 +103,7 @@ if __name__ == "__main__":
 
     exit()
  
-    
+exit()    
 # warnings.filterwarnings('ignore')
 __file__ = './'
 # set parameter
